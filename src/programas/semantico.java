@@ -25,6 +25,10 @@ public class semantico {
     public semantico() {
 
     }
+    private void error(String linha, String coluna){
+        controller.getTxtSem().appendText("Erro!\n");
+        controller.getTxtSem().appendText("Erro na linha: '" + linha + "' Coluna: '" + coluna + "\n");
+    }
 
     public semantico(Fila tokens) {
         this.tokem = tokens;
@@ -77,16 +81,12 @@ public class semantico {
         //Verificando erros por declaração de variáveis
         for (int i = 0; i < vetor.length / 4; i++) {
             if (vetor[4 * i].compareTo("t_vari") == 0) {
-
-                controller.getTxtSem().appendText("\n");
-
-                controller.getTxtSem().appendText("Estão querendo declarar uma variável!\n");
+                controller.getTxtSem().appendText("Variável declarada: '");
                 declaracao++;
             } else if (vetor[4 * i].compareTo("t_ter") == 0 && declaracao == 1) {
-                controller.getTxtSem().appendText("Esperando variável!\n");
                 declaracao++;
             } else if (vetor[4 * i].compareTo("id") == 0 && declaracao == 2) {
-                controller.getTxtSem().appendText("A variável declarada é: '" + vetor[(4 * i) + 3] + "'\n");
+                controller.getTxtSem().appendText(vetor[(4 * i) + 3] + "'\n");
                 
                 if(!variavelExiste(vetor[(4 * i) + 3])){
                     variavel[k][0] = vetor[(4 * i) + 3];
@@ -94,9 +94,8 @@ public class semantico {
                     declaracao = 0;
                     controller.getTxtSem().appendText("\n");
                 }else{
-                    controller.getTxtSem().appendText("Erro! Variável já declarada!\n");
-                    controller.getTxtSem().appendText("Erro na linha: '" + vetor[(i * 4) + 1] + "' Coluna: '" + vetor[(i * 4) + 2] + "\n");
-                    controller.getTxtSem().appendText("\n");
+                    error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
+                    controller.getTxtSem().appendText("Variável já foi declarada!\n");
                     tudoOk = false;
                     break;
                 }
@@ -105,27 +104,18 @@ public class semantico {
             } else if (vetor[4 * i].compareTo("t_escr") == 0) {
 
                 controller.getTxtSem().appendText("\n");
-
                 controller.getTxtSem().appendText("Estão querendo escrever um id!\n");
                 declaracao = 3;
             } else if (vetor[4 * i].compareTo("id") == 0 && declaracao == 3) {
                 controller.getTxtSem().appendText("Id escrito com sucesso! id: '" + vetor[(4 * i) + 3] + "'\n");
                 declaracao = 0;
 
-                controller.getTxtSem().appendText("\n");
-
             } else if (vetor[4 * i].compareTo("id") == 0 && declaracao == 0) {
-
-                controller.getTxtSem().appendText("\n");
-
                 controller.getTxtSem().appendText("Esperando declaração de valor a uma variável -> id: '" + vetor[(4 * i) + 3] + "'\n");
                 localVari = localVariavel(vetor[(4 * i) + 3]);
                 if (localVari == -1) {
-                    controller.getTxtSem().appendText("Error! Variavel não declarada!\n");
-                    controller.getTxtSem().appendText("Erro na linha: '" + vetor[(i * 4) + 1] + "' Coluna: '" + vetor[(i * 4) + 2] + "\n");
-                    declaracao = 0;
-
-                    controller.getTxtSem().appendText("\n");
+                    error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
+                    controller.getTxtSem().appendText("Variavel não declarada!\n");
                     tudoOk = false;
                     break;
                 } else {
@@ -138,9 +128,8 @@ public class semantico {
                 if (isNumeroRegexp(vetor[(4 * i) + 3])) {
                     if(divisao){
                         if(Integer.parseInt(vetor[(4 * i) + 3])==0){
-                            controller.getTxtSem().appendText("Erro! Divisão por Zero!\n");
-                            controller.getTxtSem().appendText("Valor não atribuido: '"+Integer.parseInt(vetor[(4 * i) + 3])+"'\n");
-                            controller.getTxtSem().appendText("Erro na linha: '" + vetor[(i * 4) + 1] + "' Coluna: '" + vetor[(i * 4) + 2] + "\n");
+                            error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
+                            controller.getTxtSem().appendText("Divisão por Zero!\n");
                             tudoOk = false;
                             break;
                         }
@@ -150,16 +139,13 @@ public class semantico {
                     declaracao2 = 1;
                     divisao = false;
                     
-                    
-                    
                 } else {
                     localVari2 = localVariavel(vetor[(4 * i) + 3]);
                     if(localVari2 != -1){
                         if(divisao){
                         if(Integer.parseInt(variavel[localVari2][1])==0){
-                            controller.getTxtSem().appendText("Erro! Divisão por Zero!\n");
-                            controller.getTxtSem().appendText("Valor não atribuido: '"+variavel[localVari2][1]+"'\n");
-                            controller.getTxtSem().appendText("Erro na linha: '" + vetor[(i * 4) + 1] + "' Coluna: '" + vetor[(i * 4) + 2] + "\n");
+                            error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
+                            controller.getTxtSem().appendText("Divisão por Zero!\n");
                             tudoOk = false;
                             break;
                         }
@@ -167,16 +153,14 @@ public class semantico {
                         variavel[localVari][1] = variavel[localVari2][1];
                         controller.getTxtSem().appendText("Passando o valor da variavel '"+variavel[localVari2][0]+"' para a variavel '"+variavel[localVari][0]+"'! \n");
                         declaracao = 0;
+                        declaracao2 = 1;
                     }else{
+                        error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
                         controller.getTxtSem().appendText("Erro de declaração, variáveis de Lavoro só aceitam valores tipo int! \n");
-                        controller.getTxtSem().appendText("Erro na linha: '" + vetor[(i * 4) + 1] + "' Coluna: '" + vetor[(i * 4) + 2] + "\n");
                         tudoOk = false;
                         break;
                     }    
                 }
-               
-                
-                
 
             }else if (declaracao2 == 1 && operador(vetor[4 * i])){
                 controller.getTxtSem().appendText(" Operador: '"+vetor[(4 * i)+3]+"' \n");
@@ -200,11 +184,11 @@ public class semantico {
             int total = 1;
             for (String[] variavel1 : variavel) {
                 if (variavel1[0].compareTo("-") != 0) {
-                    controller.getTxtSem().appendText("Variavel " + total + " -> id: '" + variavel1[0] + "'");
+                    controller.getTxtSem().appendText("Variavel " + total + " -> id: '" + variavel1[0] + "';\n");
                 }
                 total++;
             }
-            controller.getTxtSem().appendText("\n");
+            
         }
 
     }

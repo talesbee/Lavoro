@@ -8,6 +8,7 @@ public class semantico {
 
     private Fila tokem;
     private String[][] variavel = new String[50][2];
+    private String[][] oldVariavel = new String[50][2];
     private int k = 0;
     private FXMLDocumentController controller;
     private funcoes funk = new funcoes();
@@ -25,7 +26,8 @@ public class semantico {
     public semantico() {
 
     }
-    private void error(String linha, String coluna){
+
+    private void error(String linha, String coluna) {
         controller.getTxtSem().appendText("Erro!\n");
         controller.getTxtSem().appendText("Erro na linha: '" + linha + "' Coluna: '" + coluna + "\n");
     }
@@ -35,6 +37,8 @@ public class semantico {
         for (int i = 0; i < variavel.length; i++) {
             variavel[i][0] = "-";
             variavel[i][1] = "-";
+            oldVariavel[i][0] = "-";
+            oldVariavel[i][1] = "-";
         }
     }
 
@@ -46,6 +50,7 @@ public class semantico {
         }
         return -1;
     }
+
     private boolean variavelExiste(String vari) {
         for (String[] variavel1 : variavel) {
             if (variavel1[0].compareTo(vari) == 0) {
@@ -54,13 +59,15 @@ public class semantico {
         }
         return false;
     }
-    private boolean operador(String valor){
-        String[] op = {"t_mais","t_mul","t_menos","t_div"};
-        for(String op1 : op){
-            if(op1.compareTo(valor)==0){
-                if(op1.compareTo("t_div")==0)
+
+    private boolean operador(String valor) {
+        String[] op = {"t_mais", "t_mul", "t_menos", "t_div"};
+        for (String op1 : op) {
+            if (op1.compareTo(valor) == 0) {
+                if (op1.compareTo("t_div") == 0) {
                     divisao = true;
-                
+                }
+
                 return true;
             }
         }
@@ -73,48 +80,52 @@ public class semantico {
         return mat.matches();
     }
 
-    private int declaracao = 0, localVari = -1, localVari2 = -1,declaracao2 = 0;
+    private int declaracao = 0, localVari = -1, localVari2 = -1, declaracao2 = 0;
 
     public void analisador() {
         String[] vetor = funk.limpeza(tokem.exibeFila());
 
-        //Verificando erros por declaração de variáveis
         for (int i = 0; i < vetor.length / 4; i++) {
+            //Declaração de variável:
             if (vetor[4 * i].compareTo("t_vari") == 0) {
                 controller.getTxtSem().appendText("Variável declarada: '");
-                declaracao++;
+                declaracao = 1;
             } else if (vetor[4 * i].compareTo("t_ter") == 0 && declaracao == 1) {
-                declaracao++;
+                declaracao = 2;
             } else if (vetor[4 * i].compareTo("id") == 0 && declaracao == 2) {
                 controller.getTxtSem().appendText(vetor[(4 * i) + 3] + "'\n");
-                
-                if(!variavelExiste(vetor[(4 * i) + 3])){
+                if (!variavelExiste(vetor[(4 * i) + 3])) {
                     variavel[k][0] = vetor[(4 * i) + 3];
+                    oldVariavel[k][0] = vetor[(4 * i) + 3];
                     k++;
                     declaracao = 0;
                     controller.getTxtSem().appendText("\n");
-                }else{
-                    error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
+                } else {
+                    error(vetor[(i * 4) + 1], vetor[(i * 4) + 2]);
                     controller.getTxtSem().appendText("Variável já foi declarada!\n");
                     tudoOk = false;
                     break;
                 }
-                
-
+                //Printando variável:
             } else if (vetor[4 * i].compareTo("t_escr") == 0) {
-
-                controller.getTxtSem().appendText("\n");
-                controller.getTxtSem().appendText("Estão querendo escrever um id!\n");
+                controller.getTxtSem().appendText("Escrevendo id, ignorando declaração!\n");
                 declaracao = 3;
             } else if (vetor[4 * i].compareTo("id") == 0 && declaracao == 3) {
-                controller.getTxtSem().appendText("Id escrito com sucesso! id: '" + vetor[(4 * i) + 3] + "'\n");
+                if(variavelExiste(vetor[(4 * i)+3])){
+                    localVari = localVariavel(vetor[(4 * i) + 3]);
+                    controller.getTxtSem().appendText("Escrevendo o valor da variavel '"+variavel[localVari][0]+"'\n");
+                    controller.getTxtSem().appendText("Valor escrito: '"+variavel[localVari][1]+"'\n");
+                }else{
+                    controller.getTxtSem().appendText("Id escrito com sucesso! id: '" + vetor[(4 * i) + 3] + "'\n");
+                    controller.getTxtSem().appendText("\n");
+                }    
                 declaracao = 0;
-
+                //Adicionando valor a variavel:
             } else if (vetor[4 * i].compareTo("id") == 0 && declaracao == 0) {
                 controller.getTxtSem().appendText("Esperando declaração de valor a uma variável -> id: '" + vetor[(4 * i) + 3] + "'\n");
                 localVari = localVariavel(vetor[(4 * i) + 3]);
                 if (localVari == -1) {
-                    error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
+                    error(vetor[(i * 4) + 1], vetor[(i * 4) + 2]);
                     controller.getTxtSem().appendText("Variavel não declarada!\n");
                     tudoOk = false;
                     break;
@@ -123,87 +134,105 @@ public class semantico {
                 }
             } else if (vetor[4 * i].compareTo("t_p") == 0 && declaracao == 4) {
                 declaracao = 5;
-            } else if (vetor[4 * i].compareTo("id") == 0 && declaracao == 5) {
-                controller.getTxtSem().appendText("Valor declarado foi: '" + vetor[(4 * i) + 3] + "'\n");
-                if (isNumeroRegexp(vetor[(4 * i) + 3])) {
-                    if(divisao){
-                        if(Integer.parseInt(vetor[(4 * i) + 3])==0){
-                            error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
-                            controller.getTxtSem().appendText("Divisão por Zero!\n");
+                //Verificando o tipo de atribuição:
+            } else if (declaracao == 5) {
+                //Simples:
+                if (!operador(vetor[4 * (i + 1)])) {
+                    //É um int:
+                    if (isNumeroRegexp(vetor[(4 * i) + 3])) {
+                        variavel[localVari][1] = vetor[(4 * i) + 3];
+                        oldVariavel[localVari][1] = vetor[(4 * i) + 3];
+                        controller.getTxtSem().appendText("Valor atribuido: '" + variavel[localVari][1] + "'.\n");
+                        controller.getTxtSem().appendText("\n");
+                        //Não é um int:    
+                    } else if(vetor[4 * i].compareTo("t_IO")==0){
+                        controller.getTxtSem().appendText("Valor atribuido da entrada serial! \n");
+                        variavel[localVari][1] = "SerialRead";
+                        controller.getTxtSem().appendText("\n");
+                    }else{    
+                        localVari2 = localVariavel(vetor[(4 * i) + 3]);
+                        if (localVari2 != -1) {
+                            variavel[localVari][1] = variavel[localVari2][1];
+                            controller.getTxtSem().appendText("Valor da variável '" + variavel[localVari2][0] + "' atribuido a variável '" + variavel[localVari][0] + "'.\n");
+                            controller.getTxtSem().appendText("Novo valor da variavel '" + variavel[localVari][0] + "' é: '" + variavel[localVari][1] + "'.\n");
+                            controller.getTxtSem().appendText("\n");
+                        } else {
+                            error(vetor[(i * 4) + 1], vetor[(i * 4) + 2]);
+                            controller.getTxtSem().appendText("Lavoro só aceita variavel tipo int!\n");
                             tudoOk = false;
                             break;
                         }
+
                     }
-                    variavel[localVari][1] = vetor[(4 * i) + 3];
                     declaracao = 0;
-                    declaracao2 = 1;
-                    divisao = false;
-                    
+
+                    //Composta
                 } else {
-                    localVari2 = localVariavel(vetor[(4 * i) + 3]);
-                    if(localVari2 != -1){
-                        if(divisao){
-                        if(Integer.parseInt(variavel[localVari2][1])==0){
-                            error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
-                            controller.getTxtSem().appendText("Divisão por Zero!\n");
+                    controller.getTxtSem().appendText("Atribuição de valor composta!\n");
+                    controller.getTxtSem().appendText("Primeiro valor: '" + vetor[(4 * i) + 3] + "'\n");
+                    //É um int
+                    if (isNumeroRegexp(vetor[(4 * i) + 3])) {
+                        controller.getTxtSem().appendText("Valor colocado no registrador temporario: '" + vetor[(4 * i) + 3] + "'.\n");
+                        declaracao = 6;
+                        //Não é um int:    
+                    } else {
+                        localVari2 = localVariavel(vetor[(4 * i) + 3]);
+                        if (localVari2 != -1) {
+                            controller.getTxtSem().appendText("Valor da variavel '" + variavel[localVari2][0] + "' colocado no registrador temporario: '" + variavel[localVari2][1] + "'.\n");
+                            controller.getTxtSem().appendText("\n");
+                        } else {
+                            error(vetor[(i * 4) + 1], vetor[(i * 4) + 2]);
+                            controller.getTxtSem().appendText("Lavoro só aceita variavel tipo int!\n");
                             tudoOk = false;
                             break;
                         }
+
                     }
-                        variavel[localVari][1] = variavel[localVari2][1];
-                        controller.getTxtSem().appendText("Passando o valor da variavel '"+variavel[localVari2][0]+"' para a variavel '"+variavel[localVari][0]+"'! \n");
-                        declaracao = 0;
-                        declaracao2 = 1;
-                    }else{
-                        error(vetor[(i * 4) + 1],vetor[(i * 4) + 2]);
-                        controller.getTxtSem().appendText("Erro de declaração, variáveis de Lavoro só aceitam valores tipo int! \n");
+                    declaracao = 6;
+                }
+            } else if (declaracao == 6) {
+                if (vetor[4 * i].compareTo("t_div") == 0) {
+                    divisao = true;
+                }
+
+                declaracao = 7;
+            } else if (declaracao == 7) {
+                controller.getTxtSem().appendText("Segundo valor: '" + vetor[(4 * i) + 3] + "'\n");
+                //É um int
+                if (isNumeroRegexp(vetor[(4 * i) + 3])) {
+                    if (divisao && vetor[(4 * i) + 3].compareTo("0")==0){
+                        error(vetor[(i * 4) + 1], vetor[(i * 4) + 2]);
+                        controller.getTxtSem().appendText("Divisão por Zero!\n");
                         tudoOk = false;
                         break;
-                    }    
-                }
+                    }
+                    controller.getTxtSem().appendText("Valor colocado no registrador temporario: '" + vetor[(4 * i) + 3] + "'.\n");
+                    declaracao = 0;
+                    //Não é um int:    
+                } else {
+                    localVari2 = localVariavel(vetor[(4 * i) + 3]);
+                    if (localVari2 != -1) {
+                        controller.getTxtSem().appendText("Valor da variavel '" + variavel[localVari2][0] + "' colocado no registrador temporario: '" + variavel[localVari2][1] + "'.\n");
+                        if (divisao && variavel[localVari2][1].compareTo("0")==0){
+                            error(vetor[(i * 4) + 1], vetor[(i * 4) + 2]);
+                            controller.getTxtSem().appendText("Divisão por Zero!\n");
+                            tudoOk = false;
+                            break;
+                        }
+                        controller.getTxtSem().appendText("\n");
+                    } else {
+                        error(vetor[(i * 4) + 1], vetor[(i * 4) + 2]);
+                        controller.getTxtSem().appendText("Lavoro só aceita variavel tipo int!\n");
+                        tudoOk = false;
+                        break;
+                    }
+                    declaracao = 0;
 
-            }else if (declaracao2 == 1 && operador(vetor[4 * i])){
-                controller.getTxtSem().appendText(" Operador: '"+vetor[(4 * i)+3]+"' \n");
-                declaracao = 5;
-            }else{
-                declaracao2 = -1;
-                localVari = -1;
-            }
-        }
-
-        //Verificando erros por divisão por zero!
-        
-        
-        
-        
-        
-        
-        if(tudoOk){
-            controller.getTxtSem().appendText("\n");
-            controller.getTxtSem().appendText("Variáveis declaradas ao longo do código: \n");
-            int total = 1;
-            for (String[] variavel1 : variavel) {
-                if (variavel1[0].compareTo("-") != 0) {
-                    controller.getTxtSem().appendText("Variavel " + total + " -> id: '" + variavel1[0] + "';\n");
                 }
-                total++;
+                divisao = false;
             }
             
+            
         }
-
     }
-
-    /*
-    
-    Identificar a declaração de variável - só int ok
-    
-    detectar se ela foi declarada +1 vez (n pode); ok 
-    
-    detectar divisão por zero (n pode);
-    
-    separar o valor declarado ok
-
-    
-    
-     */
 }

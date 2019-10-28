@@ -99,9 +99,12 @@ public class FXMLDocumentController implements Initializable {
         }
 
         this.txt_log.appendText("Analisador lexico executado com sucesso! \n");
-        sintatico();
-        
-        this.txt_log.appendText("Foram encontrados " + tokens + " tokens. \n");
+        if(resultLT.tamanho()>1){
+            this.txt_log.appendText("Foram encontrados " + tokens + " tokens. \n");
+            sintatico();
+        }else{
+            this.txt_log.appendText("Não foram encontrados Tokens! \n");
+        }
     }
 
     public void sintatico() throws IOException {
@@ -116,7 +119,7 @@ public class FXMLDocumentController implements Initializable {
         this.tab_sint.setDisable(false);
         if (sin.getFinal()) {
             this.txt_log.appendText("Sintatico executado com sucesso! \n");
-            this.txt_log.appendText("Nenhum erro encontrado! \n");
+            this.txt_log.appendText("Sem erro Sintático! \n");
             semantico();
         } else {
             this.txt_log.appendText("Sintatico encontrou um erro! \n");

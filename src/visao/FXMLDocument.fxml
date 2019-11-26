@@ -55,10 +55,15 @@
                   </Pane>
                </content>
             </Tab>
-            <Tab disable="true" text="Codigo">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-              </content>
+            <Tab fx:id="tab_fcd" disable="true" text="CodigoFinal">
+               <content>
+                  <Pane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Text layoutX="22.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Codigo Assemble" />
+                        <TextArea fx:id="txt_fcd" layoutX="11.0" layoutY="25.0" prefHeight="325.0" prefWidth="390.0" />
+                     </children>
+                  </Pane>
+               </content>
             </Tab>
         </tabs>
       </TabPane>

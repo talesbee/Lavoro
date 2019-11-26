@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import javafx.scene.control.Tab;
 import programas.lexico;
 import programas.Fila;
+import programas.codigoFinal;
 import programas.sintatico;
 import programas.funcoes;
 import programas.semantico;
@@ -41,7 +42,9 @@ public class FXMLDocumentController implements Initializable {
     public TextArea getTxtSem(){
         return txt_sem;
     }
-    
+    public TextArea getTxtFcd(){
+        return txt_fcd;
+    }
 
     @FXML
     private TextArea txt_codigo;
@@ -66,16 +69,24 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private TextArea txt_sem;
+    
+    @FXML
+    private Tab tab_fcd;
+
+    @FXML
+    private TextArea txt_fcd;
 
     @FXML
     private void compilarAction() throws IOException {
         this.tab_lt.setDisable(true);
         this.tab_sint.setDisable(true);
         this.tab_sem.setDisable(true);
+        this.tab_fcd.setDisable(true);
         this.txt_log.setText("");
         this.txt_lt.setText("");
         this.txt_sint.setText("");
         this.txt_sem.setText("");
+        this.txt_fcd.setText("");
         lexico();
         
     }
@@ -134,9 +145,19 @@ public class FXMLDocumentController implements Initializable {
         this.txt_log.appendText("Semantico executado com sucesso! \n");
         if (sem.getResult()){
             this.txt_log.appendText("Sem erro semantico! \n");
+            this.txt_sem.appendText("Nenhum erro semantico encontrado!");
+            codigoFinal();
         }else{
             this.txt_log.appendText("Erro Semantico! \n");
         }
+    }
+    
+    public void codigoFinal(){
+        this.tab_fcd.setDisable(false);
+        String[] vetorLT = resultLT.exibeFila().clone();
+        codigoFinal cf = new codigoFinal(vetorLT);
+        cf.setController(aplicacao.getController());
+        cf.organizador();
     }
 
     @Override

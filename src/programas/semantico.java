@@ -147,7 +147,11 @@ public class semantico {
                             controller.getTxtSem().appendText("Valor da variável '" + variavel[localVari2][0] + "' atribuido a variável '" + variavel[localVari][0] + "'.\n");
                             controller.getTxtSem().appendText("Novo valor da variavel '" + variavel[localVari][0] + "' é: '" + variavel[localVari][1] + "'.\n");
                             controller.getTxtSem().appendText("\n");
-                        } else {
+                        } else if(vetor[(4 * i) + 3].compareTo("&")==0){
+                            
+                            controller.getTxtSem().appendText("Valor da variavel definido pela leitura serial! \n");
+                            controller.getTxtSem().appendText("\n");
+                        }else{    
                             error(vetor[(i * 4) + 1], vetor[(i * 4) + 2]);
                             controller.getTxtSem().appendText("Lavoro só aceita variavel tipo int!\n");
                             tudoOk = false;

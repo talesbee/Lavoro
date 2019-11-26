@@ -15,6 +15,7 @@ import javafx.scene.control.Tab;
 import programas.lexico;
 import programas.Fila;
 import programas.codigoFinal;
+import programas.codigoIntermediario;
 import programas.sintatico;
 import programas.funcoes;
 import programas.semantico;
@@ -44,6 +45,9 @@ public class FXMLDocumentController implements Initializable {
     }
     public TextArea getTxtFcd(){
         return txt_fcd;
+    }
+    public TextArea getTxtIcd(){
+        return txt_icd;
     }
 
     @FXML
@@ -75,6 +79,12 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private TextArea txt_fcd;
+    
+    @FXML
+    private Tab tab_icd;
+
+    @FXML
+    private TextArea txt_icd;
 
     @FXML
     private void compilarAction() throws IOException {
@@ -82,11 +92,13 @@ public class FXMLDocumentController implements Initializable {
         this.tab_sint.setDisable(true);
         this.tab_sem.setDisable(true);
         this.tab_fcd.setDisable(true);
+        this.tab_icd.setDisable(true);
         this.txt_log.setText("");
         this.txt_lt.setText("");
         this.txt_sint.setText("");
         this.txt_sem.setText("");
         this.txt_fcd.setText("");
+        this.txt_icd.setText("");
         lexico();
         
     }
@@ -146,10 +158,18 @@ public class FXMLDocumentController implements Initializable {
         if (sem.getResult()){
             this.txt_log.appendText("Sem erro semantico! \n");
             this.txt_sem.appendText("Nenhum erro semantico encontrado!");
-            codigoFinal();
+            codigoIntermediario();
         }else{
             this.txt_log.appendText("Erro Semantico! \n");
         }
+    }
+    
+    public void codigoIntermediario(){
+        this.tab_icd.setDisable(false);
+        String[] vetorLT = resultLT.exibeFila().clone();
+        codigoIntermediario ci = new codigoIntermediario(vetorLT);
+        ci.setController(aplicacao.getController());
+        ci.getIntermediario();
     }
     
     public void codigoFinal(){

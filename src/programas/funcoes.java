@@ -12,7 +12,16 @@ public class funcoes {
 
     public funcoes() {
     }
-
+    
+    public boolean operador(String valor) {
+        String[] op = {"t_mais", "t_mul", "t_menos", "t_div"};
+        for (String op1 : op) {
+            if (op1.compareTo(valor) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     public String[] limpeza(String[] vetor){
         String[] limpo;

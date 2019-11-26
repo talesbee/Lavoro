@@ -55,6 +55,16 @@
                   </Pane>
                </content>
             </Tab>
+            <Tab fx:id="tab_icd" disable="true" text="CodigoIntermediario">
+               <content>
+                  <Pane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Text layoutX="22.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Codigo Intermediario" />
+                        <TextArea fx:id="txt_icd" layoutX="11.0" layoutY="25.0" prefHeight="325.0" prefWidth="390.0" />
+                     </children>
+                  </Pane>
+               </content>
+            </Tab>
             <Tab fx:id="tab_fcd" disable="true" text="CodigoFinal">
                <content>
                   <Pane prefHeight="200.0" prefWidth="200.0">

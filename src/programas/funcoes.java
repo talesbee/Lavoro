@@ -13,8 +13,18 @@ public class funcoes {
     public funcoes() {
     }
     
-    public boolean operador(String valor) {
+    public boolean operadorM(String valor) {
         String[] op = {"t_mais", "t_mul", "t_menos", "t_div"};
+        for (String op1 : op) {
+            if (op1.compareTo(valor) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean operadorL(String valor) {
+        String[] op = {"t_maior", "t_menor", "t_igual", "t_maiorIgual", "t_menorIgual","t_nIgual"};
         for (String op1 : op) {
             if (op1.compareTo(valor) == 0) {
                 return true;

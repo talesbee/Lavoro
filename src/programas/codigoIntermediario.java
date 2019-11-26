@@ -79,17 +79,7 @@ public class codigoIntermediario {
                 if(flag2==1){
                     if(vetorTK[i].compareTo("id")==0){
                         controller.getTxtIcd().appendText(vetorID[i]+" ");
-                    }else if(vetorTK[i].compareTo("t_maior")==0){
-                        controller.getTxtIcd().appendText(vetorID[i]+" ");
-                    }else if(vetorTK[i].compareTo("t_menor")==0){
-                        controller.getTxtIcd().appendText(vetorID[i]+" ");
-                    }else if(vetorTK[i].compareTo("t_igual")==0){
-                        controller.getTxtIcd().appendText(vetorID[i]+" ");
-                    }else if(vetorTK[i].compareTo("t_maiorIgual")==0){
-                        controller.getTxtIcd().appendText(vetorID[i]+" ");
-                    }else if(vetorTK[i].compareTo("t_menorIgual")==0){
-                        controller.getTxtIcd().appendText(vetorID[i]+" ");
-                    }else if(vetorTK[i].compareTo("t_nIgual")==0){
+                    }else if(funk.operadorL(vetorTK[i])){
                         controller.getTxtIcd().appendText(vetorID[i]+" ");
                     }else if(vetorID[i].compareTo("{")==0){
                         flag2=2;
@@ -108,7 +98,7 @@ public class codigoIntermediario {
                         controller.getTxtIcd().appendText(" "+vetorID[i]+" ");
                     }else if(vetorTK[i].compareTo("t_p")==0){
                         controller.getTxtIcd().appendText(" <- ");
-                    }else if(funk.operador(vetorTK[i])){
+                    }else if(funk.operadorM(vetorTK[i])){
                         controller.getTxtIcd().appendText(" "+vetorID[i]+" ");    
                     }else if(vetorTK[i].compareTo("t_fimLinha")==0){
                         controller.getTxtIcd().appendText("\n");
@@ -118,6 +108,37 @@ public class codigoIntermediario {
                 
                 //ripeti
             }else if(flag==2){
+                if(flag2==1){
+                    if(vetorTK[i].compareTo("id")==0){
+                        controller.getTxtIcd().appendText(vetorID[i]+" ");
+                    }else if(funk.operadorL(vetorTK[i])){
+                        controller.getTxtIcd().appendText(vetorID[i]+" ");
+                    }else if(vetorTK[i].compareTo("t_a")==0){
+                        controller.getTxtIcd().appendText(" ; ");
+                    }else if(vetorID[i].compareTo("{")==0){
+                        flag2=2;
+                        controller.getTxtIcd().appendText("\n");
+                    }
+                }else if(flag2==2){
+                    if(vetorTK[i].compareTo("id")==0){
+                        controller.getTxtIcd().appendText("   "+vetorID[i]);
+                        flag2=3;    
+                    }else if(vetorID[i].compareTo("}")==0){
+                        flag=0;
+                        flag2=0;
+                    }
+                }else if(flag2==3){
+                    if(vetorTK[i].compareTo("id")==0){
+                        controller.getTxtIcd().appendText(" "+vetorID[i]+" ");
+                    }else if(vetorTK[i].compareTo("t_p")==0){
+                        controller.getTxtIcd().appendText(" <- ");
+                    }else if(funk.operadorM(vetorTK[i])){
+                        controller.getTxtIcd().appendText(" "+vetorID[i]+" ");    
+                    }else if(vetorTK[i].compareTo("t_fimLinha")==0){
+                        controller.getTxtIcd().appendText("\n");
+                        flag2=2;
+                    }
+                }
                 
             }
         }

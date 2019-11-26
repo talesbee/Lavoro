@@ -1,0 +1,25 @@
+inizia!
+
+scriv({programa fatoral com lavoro})!
+
+scriv({declaracao de variaveis})!
+
+var= fat!
+var= num!
+
+scriv({digite o valor a ser fatorado})!
+
+fat. 1!
+
+num.10!
+
+scriv({calculando o fatoral})!
+
+ripeti(fat " num > 1 " num - 1){
+fat. fat * num!
+}
+
+scriv({o resultado e })!
+scriv({fat})!
+
+finire!

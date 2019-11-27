@@ -14,6 +14,7 @@ USART_Init:
      sts UCSR0C,r16
      ret
 
+msg: .db "olamundo ",0
 
 msgdisp:
 		ldi r31, high(msg<<1)
@@ -42,7 +43,7 @@ L1: dec  r20
 
 
 
-msg: .db "olamundo ",0
+
 
 conversion:
 	ldi r17, 0x00

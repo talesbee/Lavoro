@@ -1,15 +1,14 @@
 package programas;
 
-import java.util.Arrays;
 import visao.FXMLDocumentController;
 
 public class codigoFinal {
     private FXMLDocumentController controller;
-    private String[] vetorFila;
+    private String[] vetorLinha;
     private String[] vetorID;
-    private final funcoes funk;
     private Fila fila;
-    private boolean serialActve = false;
+    private final funcoes funk;
+    private int escrevendo = 0;
     
     public void setController(FXMLDocumentController controller1) {
         this.controller = controller1;
@@ -21,83 +20,111 @@ public class codigoFinal {
     
     public codigoFinal(String[] filaCodigo){
         this.funk = new funcoes();
-        this.fila = new Fila(50);
     }
     
     public void getCodFinal(){
-        serialActive();
-        vetorID = controller.getTxtIcd().getText().split("\n");
-        String sa[] = new String[10];
-        for(String s : vetorID){
-            sa = s.split(".");
-            organizador(sa);
+        vetorLinha = controller.getTxtIcd().getText().split("\n");
+        fila = new Fila((vetorLinha.length*3));
+        for(String s : vetorLinha){
+            vetorID = s.split(" - ");
+            for(String sc : vetorID){
+                fila.insereFila(sc);
+                System.out.println(sc);
+            }
+            
         }
-        sdelay();
-    }
+        processamento();
+     }
     
-    private void organizador(String s[]){
+    private void processamento(){
         int flag = 0;
-        for(String var : s){
-            System.out.println(var);
-            if(flag == 0){
-                if(var.compareTo("_escr")==0){
-                    flag = 1;
-                }
-            }else if(flag==1){
-                String chr[] = conversorStr(var).clone();
-                creatTxt(chr);
+        System.out.println("Tamanho: "+fila.tamanho());
+        for(int i=0; i<fila.tamanho();i++){
+            String var = fila.removeFila();
+            if(flag==1){
+                scriv(var);
                 flag=0;
             }
-        }
-    }
-    
-    private void serialActive(){
-        controller.getTxtFcd().appendText("USART_Init:\n");
-	controller.getTxtFcd().appendText("     ldi r17, 0\n");
-	controller.getTxtFcd().appendText("     ldi r16, 103\n");
-	controller.getTxtFcd().appendText("     sts UBRR0H, r17\n");
-	controller.getTxtFcd().appendText("     sts UBRR0L, r16\n");
-	controller.getTxtFcd().appendText("     ldi r16, (1<<RXEN0)|(1<<TXEN0)\n");
-	controller.getTxtFcd().appendText("     sts UCSR0B,r16\n");
-	controller.getTxtFcd().appendText("     ldi r16, (1<<USBS0)|(3<<UCSZ00)\n");
-	controller.getTxtFcd().appendText("     sts UCSR0C,r16\n");
-	controller.getTxtFcd().appendText("     ret\n");
-        controller.getTxtFcd().appendText("Reset:\n");
-	controller.getTxtFcd().appendText("     RCALL USART_Init\n");
-    }
-    
-    private void sdelay(){
-        controller.getTxtFcd().appendText("\n");
-        controller.getTxtFcd().appendText("sdelay:\n");    
-        controller.getTxtFcd().appendText("     ldi  r18, 11\n");
-        controller.getTxtFcd().appendText("     ldi  r19, 99\n");
-        controller.getTxtFcd().appendText("L1: dec  r19\n");
-        controller.getTxtFcd().appendText("     brne L1\n");
-        controller.getTxtFcd().appendText("     dec  r18\n");
-        controller.getTxtFcd().appendText("     brne L1\n");
-        controller.getTxtFcd().appendText("     ret\n");
-    }
-    
-    private String[] conversorStr(String Str){
-        char chr[] = Str.toCharArray();
-        String s[] = new String[chr.length];
-        for(int i=0;i<chr.length;i++){
-           int ascii = (int)chr[i];
-           s[i] = Integer.toString(ascii);
-        }
-        return s;
-    }
-    
-    private void creatTxt(String s[]){
-        serialActve = true;
-        controller.getTxtFcd().appendText("\n ;Escrevendo Serial "+s.toString()+"\n");
-        for(String txt : s){
-            if(txt.compareTo("\n")!=0){
-                controller.getTxtFcd().appendText("     ldi r16,"+txt+"\n");
-                controller.getTxtFcd().appendText("     sts UDR0, r16\n");
-                controller.getTxtFcd().appendText("     rcall sdelay\n");
+            
+            
+            
+            
+            
+            
+            if(var.compareTo("_escr")==0){
+                flag = 1;
             }
-        }        
-        controller.getTxtFcd().appendText("\n");
+            
+            
+            
+            
+            
+
+        }
+        
+        
+        
     }
+    
+    
+    private void flags(int f){
+        switch(f){
+            case 1:
+                     
+                break;
+            case 2:
+                
+                break;
+        }
+        
+        
+        
+    }
+    
+    
+    private void scriv(String s){
+        controller.getTxtFcd().appendText(";Escrita "+escrevendo+"\n");
+        controller.getTxtFcd().appendText("msg"+escrevendo+": .db "+s+",0\n");
+                
+        controller.getTxtFcd().appendText("msgdisp+"+escrevendo+":\n");
+        controller.getTxtFcd().appendText("        ldi r31, high(msg"+escrevendo+"<<1)\n");
+        controller.getTxtFcd().appendText("        ldi r30, low(msg"+escrevendo+"<<1)\n");
+        controller.getTxtFcd().appendText("loop"+escrevendo+":   lpm r16, z+\n");
+        controller.getTxtFcd().appendText("        cpi r16, 0\n");
+        controller.getTxtFcd().appendText("        breq here"+escrevendo+"\n");
+        controller.getTxtFcd().appendText("        mov r0, r16\n");
+        controller.getTxtFcd().appendText("        sts UDR0,r0\n");
+        controller.getTxtFcd().appendText("        rcall delays \n");
+        controller.getTxtFcd().appendText("        rjmp loop"+escrevendo+"\n");
+        controller.getTxtFcd().appendText("here"+escrevendo+":  ret\n");
+        escrevendo++;
+    }
+    
+    private void fare(){
+        
+    }
+    
+    private void serial(){
+        
+    }
+    
+    private void ripeti(){
+        
+    }
+    
+    private void menzo(){
+        
+    }
+    
+    private String operador(String s){
+        String op[] = {"<",">","<=",">=","<=>","=="};
+        String ap[] = {"BRLO","BRGE","BRSH","BRGE","BRNE","BREQ"};
+        for(int i=0;i<op.length;i++){
+            if(s.compareTo(op[i])==0){
+                return ap[i];
+            }
+        }
+        return "error";
+    }
+
 }

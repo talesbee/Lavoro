@@ -16,7 +16,7 @@
                <content>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Text layoutX="22.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Codigo na lingaguem Lavoro" />
+                        <Text layoutX="22.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Codigo na linguagem Lavoro" />
                         <Text layoutX="333.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Logs" wrappingWidth="35.837890625" />
                         <TextArea fx:id="txt_codigo" layoutX="11.0" layoutY="25.0" prefHeight="325.0" prefWidth="300.0" />
                         <TextArea fx:id="txt_log" editable="false" layoutX="323.0" layoutY="134.0" prefHeight="216.0" prefWidth="268.0" />

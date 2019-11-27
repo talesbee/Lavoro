@@ -170,6 +170,7 @@ public class FXMLDocumentController implements Initializable {
         codigoIntermediario ci = new codigoIntermediario(vetorLT);
         ci.setController(aplicacao.getController());
         ci.getIntermediario();
+        codigoFinal();
     }
     
     public void codigoFinal(){
@@ -177,7 +178,7 @@ public class FXMLDocumentController implements Initializable {
         String[] vetorLT = resultLT.exibeFila().clone();
         codigoFinal cf = new codigoFinal(vetorLT);
         cf.setController(aplicacao.getController());
-        cf.organizador();
+        cf.getCodFinal();
     }
 
     @Override

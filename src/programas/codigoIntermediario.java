@@ -47,7 +47,6 @@ public class codigoIntermediario {
     private void exibe(){
         for(String var : vetorTK){
             controller.getTxtIcd().appendText(var+"\n");
-            System.out.println(var);
         }
     }
     
@@ -57,6 +56,7 @@ public class codigoIntermediario {
             if(flag==0){
                 if(vetorID[i].compareTo("scriv")==0){
                     controller.getTxtIcd().appendText("_escr - "+vetorID[i+3]+"\n");
+                    i++;
                 }else if(vetorID[i].compareTo("var")==0){
                     controller.getTxtIcd().appendText("_var - "+vetorID[i+2]+"\n");
                     //Func Fare
@@ -72,6 +72,9 @@ public class codigoIntermediario {
                     controller.getTxtIcd().appendText("_for - ");
                     flag=2;
                     flag2=1;  
+                }else if(vetorTK[i].compareTo("id")==0 && vetorTK[i+1].compareTo("t_p")==0){
+                    controller.getTxtIcd().appendText("_atrib - "+vetorID[i]);
+                    flag=6;
                 }
                 
                 //Fare, vero
@@ -86,11 +89,17 @@ public class codigoIntermediario {
                         controller.getTxtIcd().appendText("\n");
                     }
                 }else if(flag2==2){
-                    if(vetorTK[i].compareTo("id")==0){
-                        controller.getTxtIcd().appendText("   "+vetorID[i]);
-                        flag2=3;    
+                    if(vetorTK[i].compareTo("id")==0 && vetorTK[i+1].compareTo("t_p")==0){
+                        controller.getTxtIcd().appendText(": - _atrib - "+vetorID[i]);
+                        flag=5;
                     }else if(vetorID[i].compareTo("}")==0){
+                        controller.getTxtIcd().appendText("!\n");
                         flag=0;
+                        flag2=0;
+                    }else if(vetorID[i].compareTo("scriv")==0){
+                        controller.getTxtIcd().appendText(": - _escr - "+vetorID[i+3]+"\n");
+                        controller.getTxtIcd().appendText("!\n");
+                       flag=0;
                         flag2=0;
                     }
                 }else if(flag2==3){
@@ -122,10 +131,16 @@ public class codigoIntermediario {
                         controller.getTxtIcd().appendText("\n");
                     }
                 }else if(flag2==2){
-                    if(vetorTK[i].compareTo("id")==0){
-                        controller.getTxtIcd().appendText("   "+vetorID[i]);
-                        flag2=3;    
+                    if(vetorTK[i].compareTo("id")==0 && vetorTK[i+1].compareTo("t_p")==0){
+                        controller.getTxtIcd().appendText(": - _atrib - "+vetorID[i]);
+                        flag=5;
                     }else if(vetorID[i].compareTo("}")==0){
+                        controller.getTxtIcd().appendText("!\n");
+                        flag=0;
+                        flag2=0;
+                    }else if(vetorID[i].compareTo("scriv")==0){
+                        controller.getTxtIcd().appendText(": - _escr - "+vetorID[i+3]+"\n");
+                        controller.getTxtIcd().appendText("!\n");
                         flag=0;
                         flag2=0;
                     }
@@ -141,7 +156,33 @@ public class codigoIntermediario {
                         flag2=2;
                     }
                 }
-                
+                //Atribuição
+            }else if(flag==5){
+                System.out.println(vetorTK[i]);
+                if(vetorTK[i].compareTo("t_p")==0){
+                    controller.getTxtIcd().appendText(" - <-");
+                }else if(vetorTK[i].compareTo("id")==0){
+                    controller.getTxtIcd().appendText(" - "+vetorID[i]);
+                }else if(funk.operadorM(vetorTK[i])){
+                    controller.getTxtIcd().appendText(" - "+vetorID[i]);
+                }else if(vetorTK[i].compareTo("t_fimLinha")==0){
+                    controller.getTxtIcd().appendText("\n!\n");
+                    flag=0;
+                    flag2=0;
+                }
+            }else if(flag==6){
+                System.out.println(vetorTK[i]);
+                if(vetorTK[i].compareTo("t_p")==0){
+                    controller.getTxtIcd().appendText(" - <-");
+                }else if(vetorTK[i].compareTo("id")==0){
+                    controller.getTxtIcd().appendText(" - "+vetorID[i]);
+                }else if(funk.operadorM(vetorTK[i])){
+                    controller.getTxtIcd().appendText(" - "+vetorID[i]);
+                }else if(vetorTK[i].compareTo("t_fimLinha")==0){
+                    controller.getTxtIcd().appendText("\n");
+                    flag=0;
+                    flag2=0;
+                }
             }
         }
     }

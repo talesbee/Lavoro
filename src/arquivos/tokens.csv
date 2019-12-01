@@ -3,12 +3,12 @@ scriv;t_escr
 *;t_mul
 -;t_menos
 /;t_div
->;t_maior
-<;t_menor
 ==;t_igual
 =>;t_maiorIgual
 =<;t_menorIgual
 <=>;t_nIgual
+>;t_maior
+<;t_menor
 e;t_e
 o;t_ou
 legg;t_leia

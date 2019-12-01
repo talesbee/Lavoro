@@ -15,7 +15,7 @@ num.10!
 
 scriv({calculando o fatoral})!
 
-ripeti(fat " num > 1 " num - 1){
+ripeti(num " num > 1 " num - 1){
 fat. fat * num!
 }
 

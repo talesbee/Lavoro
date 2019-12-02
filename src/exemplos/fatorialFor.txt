@@ -1,17 +1,14 @@
 inizia!
 
-scriv({programa fatoral com lavoro})!
-
-scriv({declaracao de variaveis})!
+scriv({Fatorial com Lavoro})!
 
 var= fat!
 var= num!
-
-scriv({digite o valor a ser fatorado})!
-
 fat. 1!
 
-num.10!
+scriv({Fatorial de 5})!
+
+num.5!
 
 scriv({calculando o fatoral})!
 
@@ -20,6 +17,7 @@ fat. fat * num!
 }
 
 scriv({o resultado e })!
+
 scriv({fat})!
 
 finire!

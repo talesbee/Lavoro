@@ -92,15 +92,14 @@ public class codigoIntermediario {
                     if(vetorTK[i].compareTo("id")==0 && vetorTK[i+1].compareTo("t_p")==0){
                         controller.getTxtIcd().appendText(": - _atrib - "+vetorID[i]);
                         flag=5;
-                    }else if(vetorID[i].compareTo("}")==0){
+                    }else if(vetorID[i].compareTo("}")==0 && vetorID[i+1].compareTo(")")!=0){
                         controller.getTxtIcd().appendText("!\n");
                         flag=0;
                         flag2=0;
                     }else if(vetorID[i].compareTo("scriv")==0){
-                        controller.getTxtIcd().appendText(": - _escr - "+vetorID[i+3]+"\n");
-                        controller.getTxtIcd().appendText("!\n");
-                       flag=0;
-                        flag2=0;
+                       controller.getTxtIcd().appendText(": - _escr - "+vetorID[i+3]+"\n");
+                       flag=1;
+                       flag2=2;
                     }
                 }else if(flag2==3){
                     if(vetorTK[i].compareTo("id")==0){
@@ -124,8 +123,6 @@ public class codigoIntermediario {
                         controller.getTxtIcd().appendText(vetorID[i]+" - ");
                     }else if(funk.operadorM(vetorTK[i])){
                         controller.getTxtIcd().appendText(vetorID[i]+" - ");
-                    }else if(vetorTK[i].compareTo("t_a")==0){
-                        controller.getTxtIcd().appendText(" - ");
                     }else if(vetorID[i].compareTo("{")==0){
                         flag2=2;
                         controller.getTxtIcd().appendText("\n");
@@ -134,15 +131,14 @@ public class codigoIntermediario {
                     if(vetorTK[i].compareTo("id")==0 && vetorTK[i+1].compareTo("t_p")==0){
                         controller.getTxtIcd().appendText(": - _atrib - "+vetorID[i]);
                         flag=5;
-                    }else if(vetorID[i].compareTo("}")==0){
+                    }else if(vetorID[i].compareTo("}")==0 && vetorID[i+1].compareTo(")")!=0){
                         controller.getTxtIcd().appendText("!\n");
                         flag=0;
                         flag2=0;
                     }else if(vetorID[i].compareTo("scriv")==0){
                         controller.getTxtIcd().appendText(": - _escr - "+vetorID[i+3]+"\n");
-                        controller.getTxtIcd().appendText("!\n");
-                        flag=0;
-                        flag2=0;
+                        flag=1;
+                        flag2=2;
                     }
                 }else if(flag2==3){
                     if(vetorTK[i].compareTo("id")==0){
@@ -158,7 +154,18 @@ public class codigoIntermediario {
                 }
                 //Atribuição
             }else if(flag==5){
-                System.out.println(vetorTK[i]);
+                if(vetorTK[i].compareTo("t_p")==0){
+                    controller.getTxtIcd().appendText(" - <-");
+                }else if(vetorTK[i].compareTo("id")==0){
+                    controller.getTxtIcd().appendText(" - "+vetorID[i]);
+                }else if(funk.operadorM(vetorTK[i])){
+                    controller.getTxtIcd().appendText(" - "+vetorID[i]);
+                }else if(vetorTK[i].compareTo("t_fimLinha")==0){
+                    controller.getTxtIcd().appendText("\n: - !!\n");
+                    flag=1;
+                    flag2=2;
+                }
+            }else if(flag==6){
                 if(vetorTK[i].compareTo("t_p")==0){
                     controller.getTxtIcd().appendText(" - <-");
                 }else if(vetorTK[i].compareTo("id")==0){
@@ -167,19 +174,6 @@ public class codigoIntermediario {
                     controller.getTxtIcd().appendText(" - "+vetorID[i]);
                 }else if(vetorTK[i].compareTo("t_fimLinha")==0){
                     controller.getTxtIcd().appendText("\n!\n");
-                    flag=0;
-                    flag2=0;
-                }
-            }else if(flag==6){
-                System.out.println(vetorTK[i]);
-                if(vetorTK[i].compareTo("t_p")==0){
-                    controller.getTxtIcd().appendText(" - <-");
-                }else if(vetorTK[i].compareTo("id")==0){
-                    controller.getTxtIcd().appendText(" - "+vetorID[i]);
-                }else if(funk.operadorM(vetorTK[i])){
-                    controller.getTxtIcd().appendText(" - "+vetorID[i]);
-                }else if(vetorTK[i].compareTo("t_fimLinha")==0){
-                    controller.getTxtIcd().appendText("\n");
                     flag=0;
                     flag2=0;
                 }
